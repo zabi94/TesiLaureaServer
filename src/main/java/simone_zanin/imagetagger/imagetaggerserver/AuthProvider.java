@@ -18,11 +18,19 @@ public class AuthProvider extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         AuthParams ap = gson.fromJson(request.getReader(), AuthParams.class);
         Utils.log(this, ap.username+"\t"+ap.password);
-        if ((ap.username.equals("zabi94") && ap.password.equals("hi")) || ap.username.equals("guest")) {
+        if (isCorrectLogin(ap)) {
             response.setStatus(204);
         } else {
             response.setStatus(400);
         }
+    }
+    
+    public static boolean isCorrectLogin(AuthParams ap) {
+        return isCorrectLogin(ap.username, ap.password);
+    }
+    
+    public static boolean isCorrectLogin(String username, String password) {
+        return ("zabi94".equals(username) && "hi".equals(password)) || "guest".equals(username);
     }
 
     @Override

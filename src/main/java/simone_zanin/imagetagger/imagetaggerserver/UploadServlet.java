@@ -17,8 +17,17 @@ public class UploadServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
         PictureData pic = gson.fromJson(request.getReader(), PictureData.class);
-        Utils.log(this, Utils.getRealRemoteAddress(request), "Upload", pic.toString());
-        response.setStatus(HttpServletResponse.SC_OK);
+        String address = Utils.getRealRemoteAddress(request);
+        String username = request.getHeader("ImageTaggerUser");
+        Utils.log(this, address, "Upload", pic.toString());
+        
+        if (AuthProvider.isCorrectLogin(username, request.getHeader("ImageTaggerAuthentication"))) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            Utils.log(this, address, "Uploaded correctly for user "+username);
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            Utils.log(this, address, "Upload rejected: failed authentication for "+username);
+        }
     }
 
     @Override
