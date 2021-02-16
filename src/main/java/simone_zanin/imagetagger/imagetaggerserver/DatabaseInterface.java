@@ -18,13 +18,13 @@ public class DatabaseInterface {
     private static final String DATABASE_PASS = "imagetagger";
     
     private static final String CREATION_QUERY =
-            "CREATE TABLE `"+DATABASE_NAME+"`.`users` ( "
+            "CREATE TABLE IF NOT EXIST `"+DATABASE_NAME+"`.`users` ( "
             + "`uid` INT NOT NULL AUTO_INCREMENT , "
             + "`username` VARCHAR(255) NOT NULL , "
             + "`password` VARCHAR(255) NOT NULL , "
             + "PRIMARY KEY (`uid`)"
             + ");"
-            + "CREATE TABLE `"+DATABASE_NAME+"`.`pictures` ( "
+            + "CREATE TABLE IF NOT EXIST `"+DATABASE_NAME+"`.`pictures` ( "
             + "`file` VARCHAR(255) NOT NULL , "
             + "`user` INT NOT NULL REFERENCES users(uid), "
             + "`ip` VARCHAR(15) NOT NULL , "
@@ -38,7 +38,9 @@ public class DatabaseInterface {
     
     public static Connection connect() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection("jdbc:mysql://"+DATABASE_ADDRESS+"/"+DATABASE_NAME + "?user="+DATABASE_USER+"&password="+DATABASE_PASS);
+        Connection conn = DriverManager.getConnection("jdbc:mysql://"+DATABASE_ADDRESS+"/"+DATABASE_NAME + "?user="+DATABASE_USER+"&password="+DATABASE_PASS);
+        conn.prepareStatement(CREATION_QUERY).execute();
+        return conn;
     }
     
     public static void createDatabaseEntry(Connection conn, PictureData pic, int user_id, String address, File file) throws Exception {
