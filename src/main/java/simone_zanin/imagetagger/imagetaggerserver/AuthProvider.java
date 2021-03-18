@@ -28,6 +28,7 @@ public class AuthProvider extends HttpServlet {
         } catch (Exception sqle) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             Utils.log(this, "Auth exception", sqle.toString());
+            sqle.printStackTrace();
         }
     }
     

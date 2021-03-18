@@ -17,14 +17,15 @@ public class DatabaseInterface {
     private static final String DATABASE_USER = "imagetagger";
     private static final String DATABASE_PASS = "imagetagger";
     
-    private static final String CREATION_QUERY =
-            "CREATE TABLE IF NOT EXIST `"+DATABASE_NAME+"`.`users` ( "
+    private static final String CREATION_QUERY_1 =
+            "CREATE TABLE IF NOT EXISTS `"+DATABASE_NAME+"`.`users` ( "
             + "`uid` INT NOT NULL AUTO_INCREMENT , "
             + "`username` VARCHAR(255) NOT NULL , "
             + "`password` VARCHAR(255) NOT NULL , "
             + "PRIMARY KEY (`uid`)"
-            + ");"
-            + "CREATE TABLE IF NOT EXIST `"+DATABASE_NAME+"`.`pictures` ( "
+            + ");";
+            
+    private static final String CREATION_QUERY_2 = "CREATE TABLE IF NOT EXISTS `"+DATABASE_NAME+"`.`pictures` ( "
             + "`file` VARCHAR(255) NOT NULL , "
             + "`user` INT NOT NULL REFERENCES users(uid), "
             + "`ip` VARCHAR(15) NOT NULL , "
@@ -39,7 +40,8 @@ public class DatabaseInterface {
     public static Connection connect() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection conn = DriverManager.getConnection("jdbc:mysql://"+DATABASE_ADDRESS+"/"+DATABASE_NAME + "?user="+DATABASE_USER+"&password="+DATABASE_PASS);
-        conn.prepareStatement(CREATION_QUERY).execute();
+        conn.prepareStatement(CREATION_QUERY_1).execute();
+        conn.prepareStatement(CREATION_QUERY_2).execute();
         return conn;
     }
     
